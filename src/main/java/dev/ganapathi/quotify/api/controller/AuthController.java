@@ -1,5 +1,6 @@
 package dev.ganapathi.quotify.api.controller;
 
+import dev.ganapathi.quotify.api.dto.user.UserLogin;
 import dev.ganapathi.quotify.api.dto.user.UserRegister;
 import dev.ganapathi.quotify.api.dto.user.UserResponse;
 import dev.ganapathi.quotify.api.mapper.UserMapper;
@@ -26,5 +27,10 @@ public class AuthController {
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegister register){
         var user = userMapper.toEntity(register);
         return ResponseEntity.ok(authService.register(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLogin userLogin){
+        return ResponseEntity.ok(authService.login(userLogin));
     }
 }

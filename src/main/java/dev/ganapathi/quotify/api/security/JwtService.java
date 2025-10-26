@@ -1,4 +1,4 @@
-package dev.ganapathi.quotify.infra.jwt;
+package dev.ganapathi.quotify.api.security;
 
 
 import dev.ganapathi.quotify.domain.repository.UserRepository;
@@ -10,7 +10,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;

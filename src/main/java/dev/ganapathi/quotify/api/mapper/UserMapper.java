@@ -22,6 +22,7 @@ public class UserMapper {
                 .token(token)
                 .build();
     }
+
     public User toEntity(UserRegister register){
         return modelMapper.map(register, User.class);
     }
