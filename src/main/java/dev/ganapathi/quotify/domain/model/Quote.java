@@ -8,22 +8,24 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "quotes")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class Quote {
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
-    private String name;
-    private String email;
-    private String password;
+    @Column(name = "quote_id")
+    Long id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(unique = true)
+    @EqualsAndHashCode.Include
+    String quote;
+    String author;
+
+    @OneToMany(mappedBy = "quote")
     private List<UserQuotes> userQuotes;
 }
