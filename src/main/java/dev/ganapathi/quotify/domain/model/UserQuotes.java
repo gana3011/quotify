@@ -28,6 +28,8 @@ public class UserQuotes {
     private User user;
 
     @ManyToOne(optional = false)
+    //delete user_quotes if quote is deleted
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(
             name = "quote_id",
             nullable = false,

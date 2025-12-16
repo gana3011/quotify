@@ -13,6 +13,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class QuoteService {
@@ -24,20 +28,37 @@ public class QuoteService {
     @Transactional
     public QuoteResponse createQuote(Quote quote, Long userId) {
         checkQuoteAvailable(quote);
-        quoteRepository.save(quote);
+        Quote savedQuote = quoteRepository.save(quote);
         User user = userRepository.findById(userId).orElseThrow(()-> new UsernameNotFoundException("User doesnt exists"));
         UserQuotes quotesEntity = new UserQuotes();
         quotesEntity.setQuote(quote);
         quotesEntity.setUser(user);
-        return quoteMapper.toResponse(userQuotesRepository.save(quotesEntity));
-
+        userQuotesRepository.save(quotesEntity);
+        return quoteMapper.toResponse(savedQuote);
     }
 
-    private void checkQuoteAvailable(Quote quote){
+    public List<QuoteResponse> getUserQuotes(Long userId) {
+        List<Quote> quotes = userQuotesRepository.findQuotesByUserId(userId);
+        return quotes.stream().map(quoteMapper :: toResponse).collect(Collectors.toList());
+    }
+
+    public List<QuoteResponse> getQuotes() {
+        List<Quote> quotes = quoteRepository.findAll();
+        return quotes.stream().map(quoteMapper :: toResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteQuote(Long id){
+        quoteRepository.deleteById(id);
+    }
+
+    private void checkQuoteAvailable(Quote quote) {
         var existingQuote = quoteRepository.findByQuote(quote.getQuote());
-        if( existingQuote.isPresent() && existingQuote.get().equals(quote)){
+        if (existingQuote.isPresent() && existingQuote.get().equals(quote)) {
             throw new RuntimeException("Quote already exists");
         }
     }
+
+
 
 }

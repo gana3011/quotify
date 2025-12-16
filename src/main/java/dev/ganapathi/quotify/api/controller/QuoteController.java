@@ -8,13 +8,13 @@ import dev.ganapathi.quotify.domain.model.Quote;
 import dev.ganapathi.quotify.domain.service.QuoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +25,26 @@ public class QuoteController {
     private final QuoteMapper quoteMapper;
 
     @PostMapping("users/me/quotes")
-    public ResponseEntity<QuoteResponse> registerQuote(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody QuoteRegister register){
+    @ResponseStatus(HttpStatus.CREATED)
+    public QuoteResponse registerQuote(@AuthenticationPrincipal UserPrincipal user, @Valid @RequestBody QuoteRegister register){
         Long userId = user.getId();
         Quote quote = quoteMapper.toEntity(register);
-        return ResponseEntity.ok(quoteService.createQuote(quote, userId));
+        return quoteService.createQuote(quote, userId);
+    }
+
+    @GetMapping("users/me/quotes")
+    public List<QuoteResponse> getUserQuotes(@AuthenticationPrincipal UserPrincipal user){
+        Long userId = user.getId();
+        return quoteService.getUserQuotes(userId);
+    }
+
+    @GetMapping("/quotes")
+    public List<QuoteResponse> getAllQuotes(){
+        return quoteService.getQuotes();
+    }
+
+    @DeleteMapping("/quotes/{id}")
+    public void deleteQuote(@PathVariable Long id){
+        quoteService.deleteQuote(id);
     }
 }

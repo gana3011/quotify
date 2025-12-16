@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class QuoteResponse {
-    Long id;
-    Long userId;
     Long quoteId;
+    String quote;
 }

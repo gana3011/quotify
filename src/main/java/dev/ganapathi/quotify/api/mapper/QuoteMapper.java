@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class QuoteMapper {
     private final ModelMapper mapper;
 
-    public QuoteResponse toResponse(UserQuotes quote){
-       return QuoteResponse.builder().id(quote.getId()).userId(quote.getUser().getUserId()).quoteId(quote.getQuote().getId()).build();
+    public QuoteResponse toResponse(Quote quote){
+       return QuoteResponse.builder().quoteId(quote.getId()).quote(quote.getQuote()).build();
     }
 
     public Quote toEntity(QuoteRegister register){

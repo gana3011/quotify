@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface QuoteRepository extends JpaRepository<Quote, Integer> {
     Optional<Quote> findByQuote(String quote);
+    void deleteById(Long id);
 }
