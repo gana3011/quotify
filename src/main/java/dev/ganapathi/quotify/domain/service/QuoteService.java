@@ -9,13 +9,12 @@ import dev.ganapathi.quotify.domain.repository.QuoteRepository;
 import dev.ganapathi.quotify.domain.repository.UserQuotesRepository;
 import dev.ganapathi.quotify.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,14 +36,14 @@ public class QuoteService {
         return quoteMapper.toResponse(savedQuote);
     }
 
-    public List<QuoteResponse> getUserQuotes(Long userId) {
-        List<Quote> quotes = userQuotesRepository.findQuotesByUserId(userId);
-        return quotes.stream().map(quoteMapper :: toResponse).collect(Collectors.toList());
+    public Page<QuoteResponse> getUserQuotes(Long userId, Pageable pageable) {
+        Page<Quote> quotes = userQuotesRepository.findQuotesByUserId(userId, pageable);
+        return quotes.map(quoteMapper :: toResponse);
     }
 
-    public List<QuoteResponse> getQuotes() {
-        List<Quote> quotes = quoteRepository.findAll();
-        return quotes.stream().map(quoteMapper :: toResponse).collect(Collectors.toList());
+    public Page<QuoteResponse> getQuotes(Pageable pageable) {
+        Page<Quote> quotes = quoteRepository.findAll(pageable);
+        return quotes.map(quoteMapper :: toResponse);
     }
 
     @Transactional
