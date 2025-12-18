@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "quotes", indexes = @Index(columnList = "quote"))
+@Table(name = "quotes", indexes = @Index(columnList = "quote_id, quote"))
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Quote {
     @Id

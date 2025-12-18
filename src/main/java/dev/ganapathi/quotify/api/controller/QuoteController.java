@@ -1,5 +1,6 @@
 package dev.ganapathi.quotify.api.controller;
 
+import dev.ganapathi.quotify.api.dto.Cursor.CursorPage;
 import dev.ganapathi.quotify.api.dto.quote.QuoteRegister;
 import dev.ganapathi.quotify.api.dto.quote.QuoteResponse;
 import dev.ganapathi.quotify.api.mapper.QuoteMapper;
@@ -41,9 +42,9 @@ public class QuoteController {
     }
 
     @GetMapping("/quotes")
-    public Page<QuoteResponse> getAllQuotes(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        Pageable pageable = PageRequest.of(page, size);
-        return quoteService.getQuotes(pageable);
+    public CursorPage<QuoteResponse> getAllQuotes(@RequestParam(required = false) String cursor, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(0, size + 1);
+        return quoteService.getQuotes(cursor, pageable);
     }
 
     @DeleteMapping("/quotes/{id}")
