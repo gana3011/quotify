@@ -1,5 +1,6 @@
 package dev.ganapathi.quotify.api.controller;
 
+import dev.ganapathi.quotify.api.dto.Cursor.CursorPage;
 import dev.ganapathi.quotify.api.dto.quote.QuoteRegister;
 import dev.ganapathi.quotify.api.dto.quote.QuoteResponse;
 import dev.ganapathi.quotify.api.mapper.QuoteMapper;
@@ -8,13 +9,14 @@ import dev.ganapathi.quotify.domain.model.Quote;
 import dev.ganapathi.quotify.domain.service.QuoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,14 +35,16 @@ public class QuoteController {
     }
 
     @GetMapping("users/me/quotes")
-    public List<QuoteResponse> getUserQuotes(@AuthenticationPrincipal UserPrincipal user){
+    public Page<QuoteResponse> getUserQuotes(@AuthenticationPrincipal UserPrincipal user, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
         Long userId = user.getId();
-        return quoteService.getUserQuotes(userId);
+        Pageable pageable = PageRequest.of(page, size);
+        return quoteService.getUserQuotes(userId, pageable);
     }
 
     @GetMapping("/quotes")
-    public List<QuoteResponse> getAllQuotes(){
-        return quoteService.getQuotes();
+    public CursorPage<QuoteResponse> getAllQuotes(@RequestParam(required = false) String cursor, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(0, size + 1);
+        return quoteService.getQuotes(cursor, pageable);
     }
 
     @DeleteMapping("/quotes/{id}")
